@@ -1,25 +1,20 @@
-# React Universal Starter Kit
-![Dependency Badge](https://david-dm.org/Beingbook/react-universal-starter-kit.svg)
-![Build Badge](https://travis-ci.org/Beingbook/react-universal-starter-kit.svg)
+# Babel6 Express Package
+![Dependency Badge](https://david-dm.org/Beingbook/babel6-express.svg)
 
-Quick start react package. See [this live](http://react-isomorphic.herokuapp.com/)
+Build api server with Babel!
 
 ## Features
 
 * Babel 6, ES2015 + ES7
+* Mocha Test Environment
 * Webpack, development and production
-* React 0.14.x, react-router
-* HMR, reloading page through
-* Karma, Mocha test
 * Airbnb config eslint
-* Sass like css loaders
-* MaterialUI to provide better UI
 
 ## Installation
 
 ```sh
-git clone https://github.com/Beingbook/react-isomorphic-starter-kit.git
-cd react-isomorphic-starter-kit
+git clone https://github.com/Beingbook/babel6-express.git
+cd babel6-express
 npm i # alias to install
 ```
 
@@ -38,11 +33,9 @@ npm start
 npm start -- --port=8080 # if you want to change the port
 ```
 
-It will open a browser window.
-In development environment, [FOUC](https://en.wikipedia.org/wiki/Flash_of_unstyled_content) could be happened.
-Don't worry. FOUC is not in production environment.
 Never use this command for production directly because this command will be executed via `babel-node` which makes performance slower.
 To serve production application, you have to deploy or build it and execute `npm start` in the build folder.
+You can setup port from `./tools/config.js`
 
 #### Build
 
@@ -52,6 +45,12 @@ npm run build
 
 It will build package for production.
 
+#### Test
+
+```sh
+npm test
+```
+
 #### Lint
 
 ```sh
@@ -59,14 +58,6 @@ npm run lint
 ```
 
 It will eslint this package.
-
-#### CSS Comb
-
-```sh
-npm run csscomb
-```
-
-Make your css code beautiful.
 
 #### Deployment
 
