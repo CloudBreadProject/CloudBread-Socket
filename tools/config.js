@@ -1,9 +1,4 @@
 import webpack from 'webpack';
-import AssetsPlugin from 'assets-webpack-plugin';
-import ExtractTextPlugin from 'extract-text-webpack-plugin';
-import postcssImport from 'postcss-import';
-import precss from 'precss';
-import autoprefixer from 'autoprefixer';
 import { merge } from 'lodash';
 import { resolve } from 'path';
 import fs from 'fs';
@@ -13,7 +8,7 @@ export const DEBUG = !process.argv.includes('--release');
 export const VERBOSE = process.argv.includes('--verbose');
 export const WATCH = process.argv.includes('--watch');
 
-export const DEV_PORT = argv.port || 5000;
+export const DEV_PORT = argv.port || 8080;
 
 export const ROOT = resolve(__dirname, '../');
 export const buildPath = `${ROOT}/build`;
@@ -57,7 +52,7 @@ export const webpackCommon = {
   stats,
   resolve: {
     root: srcPath,
-    extensions: ['', '.jsx', '.json', '.js'],
+    extensions: ['', '.json', '.js'],
   },
   module: {
     loaders: [
@@ -66,25 +61,11 @@ export const webpackCommon = {
         exclude: /(node_modules)/,
         loader: 'babel-loader',
         query: {
-          presets: ['react', 'es2015', 'stage-0', 'stage-1', 'stage-2', 'stage-3'],
+          presets: ['es2015', 'stage-0', 'stage-1', 'stage-2', 'stage-3'],
         },
       }, {
         test: /\.json$/,
         loader: 'json-loader',
-      }, {
-        test: /\.scss$/,
-        ...(DEBUG ? {
-          loaders: [
-            'style-loader',
-            'css-loader?sourceMap&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
-            'postcss-loader',
-          ],
-        } : {
-          loader: ExtractTextPlugin.extract(
-            'style-loader',
-            'css-loader?minimize&modules&importLoaders=1&localIdentName=[hash:base64:5]!postcss-loader',
-          ),
-        }),
       }, {
         test: /\.txt$/,
         loader: 'raw-loader',
@@ -97,20 +78,6 @@ export const webpackCommon = {
       },
     ],
   },
-  postcss(bundler) {
-    return [
-      postcssImport({
-        addDependencyTo: bundler,
-        path: [
-          srcPath,
-        ],
-      }),
-      precss(),
-      autoprefixer({
-        browsers: AUTOPREFIXER_BROWSERS,
-      }),
-    ];
-  },
 };
 
 export const webpackCommonPlugins = [
@@ -120,74 +87,14 @@ export const webpackCommonPlugins = [
     // development
   ] : [
     // productions
-    new ExtractTextPlugin('style.css', {
-      allChunks: true,
-    }),
   ]),
 ];
-
-export const webpackClient = merge({}, webpackCommon, {
-  entry: {
-    app: [
-      ...(DEBUG ? ['webpack-hot-middleware/client'] : []),
-      'babel-polyfill',
-      `${srcPath}/client.jsx`,
-    ],
-  },
-  target: 'web',
-  output: {
-    path: buildStaticPath,
-    filename: DEBUG ? '[name].js?[hash]' : '[name].[hash].js',
-  },
-  devtool: DEBUG ? 'cheap-module-eval-source-map' : false,
-  plugins: [
-    ...webpackCommonPlugins,
-    new AssetsPlugin({
-      path: buildPath,
-      filename: 'assets.json',
-    }),
-    ...(DEBUG ? [
-      // development
-      new webpack.HotModuleReplacementPlugin(),
-      new webpack.NoErrorsPlugin(),
-    ] : [
-      new webpack.optimize.DedupePlugin(),
-      new webpack.optimize.UglifyJsPlugin({
-        compress: {
-          screw_ie8: true,
-          warnings: VERBOSE,
-        },
-      }),
-      new webpack.optimize.AggressiveMergingPlugin(),
-    ]),
-  ],
-});
-
-if (DEBUG) {
-  webpackClient.module.loaders
-    .filter(x => x.loader === 'babel-loader')
-    .forEach(x => x.query = {
-      ...x.query,
-      plugins: [
-        ['react-transform', {
-          transforms: [{
-            transform: 'react-transform-hmr',
-            imports: ['react'],
-            locals: ['module'],
-          }, {
-            'transform': 'react-transform-catch-errors',
-            'imports': ['react', 'redbox-react'],
-          }],
-        }],
-      ],
-    });
-}
 
 export const webpackServer = merge({}, webpackCommon, {
   entry: {
     server: [
       'babel-polyfill',
-      `${srcPath}/server.jsx`,
+      `${srcPath}/server.js`,
     ],
   },
   output: {
@@ -206,7 +113,6 @@ export const webpackServer = merge({}, webpackCommon, {
     __dirname: false,
   },
   externals: [
-    /^\.\/assets\.json$/,
     fs.readdirSync(modulePath).filter(x => x !== '.bin'),
   ],
   plugins: [
@@ -217,12 +123,3 @@ export const webpackServer = merge({}, webpackCommon, {
     ),
   ],
 });
-
-if (DEBUG) {
-  webpackServer.module.loaders
-    .filter(x => x.loaders && x.loaders[0] === 'style-loader')
-    .forEach(x => {
-      x.loaders.shift();
-      x.loaders[0] = x.loaders[0].replace(/css-loader?/, 'css-loader/locals?');
-    });
-}
