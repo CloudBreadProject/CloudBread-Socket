@@ -76,31 +76,19 @@ Run `tree -L 2 -I 'node_modules|build|.git|.DS_Store' -A -a` then you will see b
 
 ```sh
 .                   # Root
-├── .csscomb.json   # css comb configurations
 ├── .editorconfig   # common editor configurations
 ├── .eslintrc.json  # eslint configurations
 ├── .gitignore
 ├── LICENSE.txt
 ├── README.md
-├── karma.config.js # Karma test configurations
 ├── package.json    # dependency list
 ├── src             # application source code
 │ ├── api           # api end point
 │ ├── assets        # static files
-│ ├── client.jsx    # client entry
-│ ├── components    # react components such as Header, Loading, etc.
 │ ├── config.js     # configuration such as api
-│ ├── containers    # containers such as HomePage, ContentPage, etc.
-│ ├── layouts       # layout such as commonLayout or ChannelLayout, etc.
-│ ├── lib           # common library, utilities such as DOM, fetch, etc.
-│ ├── modules       # Redux reducers, actions and constants
 │ ├── public        # static files to serve through http or https
-│ ├── redux         # redux store and middlewares
-│ ├── routes        # route configurations
 │ ├── server.jsx    # server entry
-│ └── styles        # css codes
 ├── tests           # unit tests
-│ └── layouts       # layout tests
 └── tools           # build and deployment tools
     ├── .eslintrc.json
     ├── config.js   # webpack configurations
