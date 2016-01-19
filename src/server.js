@@ -1,10 +1,26 @@
 import { resolve } from 'path';
 import express from 'express';
+import bodyParser from 'body-parser';
+import session from 'express-session';
 import api from 'api';
+import { secret } from './config';
 
 const ROOT = resolve(__dirname, '.');
 const app = express();
 app.use(express.static(`${ROOT}/public`));
+
+app.use(bodyParser.json());
+app.use(bodyParser.raw());
+app.use(bodyParser.text());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(session({
+  secret,
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    secure: true,
+  },
+}));
 
 if (__DEV__) {
   app.use((req, res, next) => {

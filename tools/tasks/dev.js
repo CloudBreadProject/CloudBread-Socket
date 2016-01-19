@@ -9,7 +9,7 @@ function _dev() {
   return new Promise((resolve, reject) => {
     const webpackPackage = [webpackServer];
     const bundler = webpack(webpackPackage);
-    bundler.run(async (error, res) => {
+    bundler.watch(200, async (error, res) => {
       if (error) {
         return reject(error);
       }
