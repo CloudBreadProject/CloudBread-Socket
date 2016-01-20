@@ -1,8 +1,6 @@
 {
   "parser": "babel-eslint",
-  "extends": "airbnb",
-  "plugins": [
-  ],
+  "extends": "airbnb/base",
   "env": {
     "node": true
   },

@@ -89,7 +89,6 @@ Run `tree -L 2 -I 'node_modules|build|.git|.DS_Store' -A -a` then you will see b
 │ ├── core         # configuration such as credentials
 │ ├── models       # mongoose models
 │ ├── public       # static files to serve through http or https
-│ ├── routes       # server routers
 │ ├── server.js    # server entry
 ├── tests          # unit tests
 └── tools          # build and deployment tools
