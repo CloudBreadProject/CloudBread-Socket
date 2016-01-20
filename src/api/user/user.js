@@ -42,6 +42,18 @@ router
   });
 
 router
-  .route('/users/:userId');
+  .route('/users/:userId')
+  .get(async (req, res, next) => {
+    try {
+      const { userId } = req.params;
+      const user = await User.findById(userId);
+      if (!user) {
+        throw Error('No user found');
+      }
+      return res.send(user);
+    } catch (error) {
+      return next(error);
+    }
+  });
 
 export default router;

@@ -39,7 +39,7 @@ function preUpdate(next) {
 
 export function modelize(modelName, schema, {
   createdAt = true,
-  updatedAt = true,
+  updatedAt = false,
 } = {}) {
   schema.add({
     _id: {
@@ -48,12 +48,11 @@ export function modelize(modelName, schema, {
       default: shortid.generate,
     },
   });
-  const now = Date.now();
   if (createdAt) {
     schema.add({
       createdAt: {
         type: Date,
-        default: now,
+        default: Date.now,
       },
     });
   }
@@ -61,7 +60,7 @@ export function modelize(modelName, schema, {
     schema.add({
       updatedAt: {
         type: Date,
-        default: now,
+        default: Date.now,
       },
     });
     schema.pre('update', preUpdate);

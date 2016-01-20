@@ -8,6 +8,7 @@ Build api server with Babel!
 * Babel 6, ES2015 + ES7
 * Mocha Test Environment
 * Webpack, development and production
+* Mongoose
 * Airbnb config eslint
 
 ## Installation
@@ -20,7 +21,8 @@ npm i # alias to install
 
 ### Requirements
 
-Node.js 4.x or 5.x
+* Node.js 4.x or 5.x
+* MongoDB Server (basically try to connect mongodb://localhost)
 
 ## Usage
 
