@@ -1,27 +1,35 @@
 import {
   modelize,
   Schema,
-  Types,
   unique,
   required,
   isEmail,
+  isAlphanumeric,
 } from 'core/mongoose';
 
 const userSchema = new Schema({
+  username: {
+    type: String,
+    validate: [isAlphanumeric],
+    unique,
+    required,
+    minlength: 6,
+    maxlength: 18,
+  },
   email: {
     type: String,
     validate: [isEmail],
     unique,
     required,
   },
-  name: {
+  nickname: {
     type: String,
     minlength: 4,
-    maxlength: 20,
+    maxlength: 18,
     required,
   },
   passports: [{
-    type: Types.ObjectId,
+    type: String,
     ref: 'Passport',
   }],
 });

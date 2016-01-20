@@ -1,13 +1,18 @@
 import {
   modelize,
   Schema,
-  Types,
   required,
 } from 'core/mongoose';
 
 const passportSchema = new Schema({
-  user: { type: Types.ObjectId, ref: 'User' },
-  password: { type: String, required },
+  user: {
+    type: String,
+    ref: 'User',
+  },
+  password: {
+    type: String,
+    required,
+  },
 });
 
 const Passport = modelize('Passport', passportSchema);

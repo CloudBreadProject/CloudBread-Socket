@@ -13,6 +13,10 @@ export const isEmail = {
   validator: validator.isEmail,
   message: '{VALUE} is invalid email address',
 };
+export const isAlphanumeric = {
+  validator: validator.isAlphanumeric,
+  message: '{VALUE} is not alpha, number.',
+};
 
 export function connectToMongoDB() {
   return new Promise((resolve, reject) => {

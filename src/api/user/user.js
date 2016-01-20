@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import User from 'models/User';
+import { User, Passport } from 'models';
 
 const router = Router();
 
@@ -15,17 +15,27 @@ router
   })
   .post(async (req, res, next) => {
     let user;
+    let passport;
     try {
-      const { email, name } = req.body;
-      user = new User({
+      const { email, username, nickname, password } = req.body;
+      user = await User.create({
+        username,
         email,
-        name,
+        nickname,
       });
-      user = await user.save();
+      passport = await Passport.create({
+        user,
+        password,
+      });
+      user.passports.push(passport);
+      await user.save();
       return res.send(user);
     } catch (error) {
       if (user) {
         user.remove();
+      }
+      if (passport) {
+        passport.remove();
       }
       return next(error);
     }
