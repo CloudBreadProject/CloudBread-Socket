@@ -2,6 +2,7 @@ import { resolve } from 'path';
 import express from 'express';
 import bodyParser from 'body-parser';
 import session from 'express-session';
+import morgan from 'morgan';
 import api from 'api';
 import { connectToMongoDB } from 'core/mongoose';
 import { SECRET } from 'config/credentials';
@@ -25,6 +26,15 @@ async function bootstrap() {
 (async () => {
   try {
     await bootstrap();
+
+    if (__DEV__) {
+      app.use(morgan('dev'));
+    } else {
+      app.use(morgan('combined', {
+        skip: (req, res) => res.statusCode < 400,
+      }));
+    }
+
     app.use(express.static(`${ROOT}/public`));
     app.use(bodyParser.json());
     app.use(bodyParser.raw());
@@ -38,13 +48,6 @@ async function bootstrap() {
         secure: true,
       },
     }));
-
-    if (__DEV__) {
-      app.use((req, res, next) => {
-        console.log(req.url);
-        return next();
-      });
-    }
 
     app.use('/api', api);
     app.get('*', (req, res) => {

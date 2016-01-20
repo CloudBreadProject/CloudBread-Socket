@@ -68,31 +68,34 @@ npm run deploy
 ```
 
 Basically this script deploys this package on git repository after build.
-GitHub, Heroku, Azure, AWS, AppEngine doesn't matter, perhaps.
+GitHub, Heroku, Azure, AWS, AppEngine, whatever doesn't matter, perhaps.
 
 ### Directory Map
 
 Run `tree -L 2 -I 'node_modules|build|.git|.DS_Store' -A -a` then you will see below:
 
 ```sh
-.                   # Root
-├── .editorconfig   # common editor configurations
-├── .eslintrc.json  # eslint configurations
+.                  # Root
+├── .editorconfig  # common editor configurations
+├── .eslintrc.json # eslint configurations
 ├── .gitignore
 ├── LICENSE.txt
 ├── README.md
-├── package.json    # dependency list
-├── src             # application source code
-│ ├── api           # api end point
-│ ├── assets        # static files
-│ ├── config.js     # configuration such as api
-│ ├── public        # static files to serve through http or https
-│ ├── server.jsx    # server entry
-├── tests           # unit tests
-└── tools           # build and deployment tools
+├── package.json   # dependency list
+├── src            # application source code
+│ ├── api          # api end point
+│ ├── assets       # static files
+│ ├── config       # configuration such as credentials
+│ ├── core         # configuration such as credentials
+│ ├── models       # mongoose models
+│ ├── public       # static files to serve through http or https
+│ ├── routes       # server routers
+│ ├── server.js    # server entry
+├── tests          # unit tests
+└── tools          # build and deployment tools
     ├── .eslintrc.json
-    ├── config.js   # webpack configurations
+    ├── config.js  # webpack configurations
     ├── lib
     ├── run.js
-    └── tasks       # build, deploy, serve, etc...
+    └── tasks      # build, deploy, serve, etc...
 ```
