@@ -30,6 +30,7 @@
     "kerberos": "0.0.17",
     "mongoose": "^4.3.6",
     "morgan": "^1.6.1",
+    "shortid": "^2.2.4",
     "source-map-support": "^0.4.0"
   },
   "devDependencies": {

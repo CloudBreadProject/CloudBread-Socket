@@ -12,6 +12,16 @@ router
     } catch (error) {
       return next(error);
     }
+  })
+  .post(async (req, res, next) => {
+    try {
+      const user = new User({
+        email: 'test@bbb.com',
+      });
+      return res.send(user);
+    } catch (error) {
+      return next(error);
+    }
   });
 
 router
