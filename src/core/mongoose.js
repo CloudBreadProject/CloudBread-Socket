@@ -1,12 +1,18 @@
 import mongoose from 'mongoose';
 import { MONGO_DB_URL } from 'config/credentials';
 import shortid from 'shortid';
+import validator from 'validator';
 
 export default mongoose;
 export const Schema = mongoose.Schema;
 export const Types = mongoose.Schema.Types;
 export const required = true;
 export const unique = true;
+
+export const isEmail = {
+  validator: validator.isEmail,
+  message: '{VALUE} is invalid email address',
+};
 
 export function connectToMongoDB() {
   return new Promise((resolve, reject) => {
@@ -22,7 +28,15 @@ export function connectToMongoDB() {
   });
 }
 
-export function modelize(modelName, schema) {
+function preUpdate(next) {
+  this.updatedAt = Date.now();
+  next();
+}
+
+export function modelize(modelName, schema, {
+  createdAt = true,
+  updatedAt = true,
+} = {}) {
   schema.add({
     _id: {
       type: String,
@@ -30,10 +44,29 @@ export function modelize(modelName, schema) {
       default: shortid.generate,
     },
   });
+  const now = Date.now();
+  if (createdAt) {
+    schema.add({
+      createdAt: {
+        type: Date,
+        default: now,
+      },
+    });
+  }
+  if (updatedAt) {
+    schema.add({
+      updatedAt: {
+        type: Date,
+        default: now,
+      },
+    });
+    schema.pre('update', preUpdate);
+    schema.pre('save', preUpdate);
+    schema.pre('findOneAndUpdate', preUpdate);
+  }
   function setOption(option, value) {
     schema.set(option, schema.get(option) || value);
   }
   setOption('minimize', true);
-  setOption('timestamps', true);
   return mongoose.model(modelName, schema);
 }

@@ -14,17 +14,24 @@ router
     }
   })
   .post(async (req, res, next) => {
+    let user;
     try {
-      const user = new User({
-        email: 'test@bbb.com',
+      const { email, name } = req.body;
+      user = new User({
+        email,
+        name,
       });
+      user = await user.save();
       return res.send(user);
     } catch (error) {
+      if (user) {
+        user.remove();
+      }
       return next(error);
     }
   });
 
 router
-  .route('/users/:id');
+  .route('/users/:userId');
 
 export default router;

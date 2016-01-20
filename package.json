@@ -31,7 +31,8 @@
     "mongoose": "^4.3.6",
     "morgan": "^1.6.1",
     "shortid": "^2.2.4",
-    "source-map-support": "^0.4.0"
+    "source-map-support": "^0.4.0",
+    "validator": "^4.5.1"
   },
   "devDependencies": {
     "babel-cli": "^6.3.17",
