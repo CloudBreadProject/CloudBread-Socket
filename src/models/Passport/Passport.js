@@ -3,6 +3,7 @@ import {
   Schema,
   required,
 } from 'core/mongoose';
+import { hash } from 'lib/bcrypt';
 
 const passportSchema = new Schema({
   user: {
@@ -14,6 +15,13 @@ const passportSchema = new Schema({
     required,
   },
 });
+
+async function preSave(next) {
+  this.password = await hash(this.password);
+  next();
+}
+
+passportSchema.pre('save', preSave);
 
 const Passport = modelize('Passport', passportSchema);
 
