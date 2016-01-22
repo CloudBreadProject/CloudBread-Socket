@@ -37,6 +37,10 @@ const userSchema = new Schema({
 userSchema.statics = require('./statics');
 userSchema.methods = require('./methods');
 
-const User = modelize('User', userSchema);
+const User = modelize('User', userSchema, {
+  hide: [
+    'passports',
+  ],
+});
 
 export default User;

@@ -23,6 +23,11 @@ const tokenSchema = new Schema({
 
 tokenSchema.methods = require('./methods');
 
-const Token = modelize('Token', tokenSchema);
+const Token = modelize('Token', tokenSchema, {
+  show: [
+    'accessToken',
+    'expireDate',
+  ],
+});
 
 export default Token;

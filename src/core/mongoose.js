@@ -43,7 +43,10 @@ function preUpdate(next) {
 export function modelize(modelName, schema, {
   createdAt = true,
   updatedAt = false,
+  hide = [],
+  show = null,
 } = {}) {
+  // replace object id to shortid
   schema.add({
     _id: {
       type: String,
@@ -51,6 +54,7 @@ export function modelize(modelName, schema, {
       default: shortid.generate,
     },
   });
+  // add createdAt
   if (createdAt) {
     schema.add({
       createdAt: {
@@ -59,6 +63,7 @@ export function modelize(modelName, schema, {
       },
     });
   }
+  // add updatedAt
   if (updatedAt) {
     schema.add({
       updatedAt: {
@@ -70,6 +75,23 @@ export function modelize(modelName, schema, {
     schema.pre('save', preUpdate);
     schema.pre('findOneAndUpdate', preUpdate);
   }
+  // clean up json for result
+  const filter = ['__v', '_id'].concat(hide);
+  schema.methods.toJSON = function toJSON() {
+    const data = this.toObject({ virtuals: true });
+    for (const key in data) {
+      if (show) {
+        if (show.indexOf(key) === -1) {
+          delete data[key];
+        }
+      } else {
+        if (filter.indexOf(key) !== -1) {
+          delete data[key];
+        }
+      }
+    }
+    return data;
+  };
   function setOption(option, value) {
     schema.set(option, schema.get(option) || value);
   }
