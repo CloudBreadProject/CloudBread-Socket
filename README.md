@@ -1,5 +1,5 @@
 # Babel6 Express Package
-![Dependency Badge](https://david-dm.org/Beingbook/babel6-express.svg)
+![Dependency Badge](https://david-dm.org/Beingbook/babel6-api-server.svg)
 
 Build api server with Babel!
 
