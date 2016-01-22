@@ -34,6 +34,9 @@ const userSchema = new Schema({
   }],
 });
 
+userSchema.statics = require('./statics');
+userSchema.methods = require('./methods');
+
 const User = modelize('User', userSchema);
 
 export default User;

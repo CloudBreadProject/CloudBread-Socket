@@ -1,3 +1,4 @@
+/* eslint no-shadow: 0 */
 import mongoose from 'mongoose';
 import { MONGO_DB_URL } from 'config/credentials';
 import shortid from 'shortid';
@@ -8,6 +9,8 @@ export const Schema = mongoose.Schema;
 export const Types = mongoose.Schema.Types;
 export const required = true;
 export const unique = true;
+export const createdAt = true;
+export const updatedAt = true;
 
 export const isEmail = {
   validator: validator.isEmail,

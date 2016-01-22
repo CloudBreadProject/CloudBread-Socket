@@ -4,9 +4,10 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import session from 'express-session';
 import morgan from 'morgan';
-import api from 'api';
-import { connectToMongoDB } from 'core/mongoose';
+import passport from 'core/passport';
 import { SECRET } from 'config/credentials';
+import api from 'api';
+import bootstrap from './bootstrap';
 
 const ROOT = resolve(__dirname, '.');
 const app = express();
@@ -19,21 +20,22 @@ const server = app.listen(process.env.PORT || __PORT__, () => {
 });
 export default server;
 
-// before app has middlewares, you can pre-process
-async function bootstrap() {
-  await connectToMongoDB();
-}
-
 (async () => {
   try {
     await bootstrap();
-
     if (__DEV__) {
       app.use(morgan('dev'));
     } else {
       app.use(morgan('combined', {
         skip: (req, res) => res.statusCode < 400,
       }));
+      // redirect HTTP to HTTPS in production
+      app.use((req, res, next) => {
+        if (!req.secure) {
+          return res.redirect('https://' + req.headers.host + req.url);
+        }
+        return next();
+      });
     }
 
     app.use(express.static(`${ROOT}/public`));
@@ -49,6 +51,8 @@ async function bootstrap() {
         secure: true,
       },
     }));
+    app.use(passport.initialize());
+    app.use(passport.session());
 
     app.use('/api', api);
     app.get('*', (req, res) => {

@@ -1,7 +1,6 @@
 import {
   modelize,
   Schema,
-  required,
 } from 'core/mongoose';
 import { hash } from 'lib/bcrypt';
 
@@ -12,13 +11,31 @@ const passportSchema = new Schema({
   },
   password: {
     type: String,
-    required,
+  },
+  accessToken: {
+    type: String,
   },
 });
 
+passportSchema.methods = require('./methods');
+passportSchema.statics = require('./statics');
+
 async function preSave(next) {
-  this.password = await hash(this.password);
-  next();
+  if (this.isModified('password')) {
+    if (!this.password) {
+      // TODO: when provider is local, password should be came
+    }
+
+    if (this.password < 10 || this.password > 30) {
+      // TODO: validate password length
+    }
+
+    // TODO: validate password combinations with alpha, number, !@#$
+
+    // hash password
+    this.password = await hash(this.password);
+  }
+  return next();
 }
 
 passportSchema.pre('save', preSave);
