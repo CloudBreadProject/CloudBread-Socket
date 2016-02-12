@@ -18,7 +18,6 @@ const server = app.listen(process.env.PORT || __PORT__, () => {
     console.log('__DEV_START__');
   }
 });
-export default server;
 
 (async () => {
   try {
@@ -32,7 +31,7 @@ export default server;
       // redirect HTTP to HTTPS in production
       app.use((req, res, next) => {
         if (!req.secure) {
-          return res.redirect('https://' + req.headers.host + req.url);
+          return res.redirect(`https://${req.headers.host}${req.url}`);
         }
         return next();
       });
@@ -55,10 +54,13 @@ export default server;
     app.use(passport.session());
 
     app.use('/api', api);
-    app.get('*', (req, res) => {
-      res.status(200).send('Hello World');
-    });
   } catch (error) {
     console.error(error);
   }
 })();
+
+app.get('*', (req, res) => {
+  res.status(200).send('Hello World');
+});
+
+export default server;

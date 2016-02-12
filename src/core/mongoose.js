@@ -77,7 +77,7 @@ export function modelize(modelName, schema, {
   }
   // clean up json for result
   const filter = ['__v', '_id'].concat(hide);
-  schema.methods.toJSON = function toJSON() {
+  schema.methods.toJSON = function toJSON() { // eslint-disable-line
     const data = this.toObject({ virtuals: true });
     for (const key in data) {
       if (show) {

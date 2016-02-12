@@ -2,11 +2,13 @@
   "parser": "babel-eslint",
   "extends": "airbnb/base",
   "env": {
-    "node": true
+    "node": true,
+    "mocha": true
   },
   "globals": {
     "__DEV__": true,
-    "__PORT__": true
+    "__PORT__": true,
+    "expect": true
   },
   "rules": {
     "quotes": [2, "single"],
