@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "test": "env NODE_PATH=$NODE_PATH:$PWD/src mocha tests/* --require babel-core/register --require babel-polyfill npm o--require ./tests/helper --recursive",
+    "test": "env NODE_PATH=$NODE_PATH:$PWD/src mocha tests/* --require babel-core/register --require babel-polyfill --require ./tests/helper --recursive",
     "start": "$(npm bin)/babel-node tools/run dev",
     "build": "npm run test && $(npm bin)/babel-node tools/run build -- --release",
     "lint": "$(npm bin)/eslint . --ext .js,.jsx",
