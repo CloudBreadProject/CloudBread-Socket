@@ -4,7 +4,7 @@
     "test": "env NODE_PATH=$NODE_PATH:$PWD/src mocha tests/* --require babel-core/register --require ./tests/helper --recursive",
     "start": "$(npm bin)/babel-node tools/run dev",
     "build": "npm run test && $(npm bin)/babel-node tools/run build -- --release",
-    "lint": "$(npm bin)/eslint ./src ./tools",
+    "lint": "$(npm bin)/eslint . --ext .js,.jsx",
     "clean": "$(npm bin)/babel-node tools/run clean",
     "deploy": "npm run lint && npm run test && $(npm bin)/babel-node tools/run deploy -- --release"
   },

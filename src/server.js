@@ -32,7 +32,7 @@ export default server;
       // redirect HTTP to HTTPS in production
       app.use((req, res, next) => {
         if (!req.secure) {
-          return res.redirect('https://' + req.headers.host + req.url);
+          return res.redirect(`https://${req.headers.host}${req.url}`);
         }
         return next();
       });

@@ -10,9 +10,7 @@ export const TOKEN_DOES_NOT_EXIST = 'TOKEN_DOES_NOT_EXIST';
 export const TOKEN_INVALID = 'TOKEN_INVALID';
 export const TOKEN_EXPIRED = 'TOKEN_EXPIRED';
 
-passport.serializeUser((user, done) => {
-  return done(null, user.id);
-});
+passport.serializeUser((user, done) => done(null, user.id));
 
 passport.deserializeUser(async (id, done) => {
   try {
