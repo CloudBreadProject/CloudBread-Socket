@@ -8,7 +8,7 @@ export const DEBUG = !process.argv.includes('--release');
 export const VERBOSE = process.argv.includes('--verbose');
 export const WATCH = process.argv.includes('--watch');
 
-export const DEV_PORT = argv.port || 8080;
+export const DEV_PORT = argv.port || 8222;
 
 export const ROOT = resolve(__dirname, '../');
 export const buildPath = `${ROOT}/build`;
