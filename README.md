@@ -1,5 +1,9 @@
 # CloudBread-Socket
-![Dependency Badge](https://david-dm.org/Beingbook/babel6-api-server.svg)
+[![bitHound Overall Score](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket/badges/score.svg)](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket)
+[![bitHound Dependencies](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket/badges/dependencies.svg)](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket/1.0.0-dev/dependencies/npm)
+[![bitHound Dev Dependencies](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket/badges/devDependencies.svg)](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket/1.0.0-dev/dependencies/npm)
+[![bitHound Code](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket/badges/code.svg)](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket)
+
 CloudBread game server real-time communication project
 
 This project is designed for CloudBread mobile game & app server engine to implement real-time bidirectional communication.
