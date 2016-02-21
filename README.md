@@ -2,8 +2,8 @@
 
 [![Build Status](https://travis-ci.org/CloudBreadProject/CloudBread-Socket.svg?branch=master)](https://travis-ci.org/CloudBreadProject/CloudBread-Socket)
 [![bitHound Overall Score](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket/badges/score.svg)](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket)
-[![bitHound Dependencies](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket/badges/dependencies.svg)](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket/1.0.0-dev/dependencies/npm)
-[![bitHound Dev Dependencies](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket/badges/devDependencies.svg)](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket/1.0.0-dev/dependencies/npm)
+[![bitHound Dependencies](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket/badges/dependencies.svg)](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket/master/dependencies/npm)
+[![bitHound Dev Dependencies](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket/badges/devDependencies.svg)](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket/master/dependencies/npm)
 [![bitHound Code](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket/badges/code.svg)](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket)
 
 CloudBread game server real-time communication project
