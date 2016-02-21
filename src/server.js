@@ -1,6 +1,8 @@
-/* eslint no-console: 0 */
+/* eslint no-console: 0, no-throw-literal: 0 */
 import express from 'express';
 import cors from 'cors';
+import redisAdapter from 'socket.io-redis';
+import { REDIS_URL } from 'config';
 
 const app = express();
 const server = require('http').Server(app); // eslint-disable-line
@@ -19,55 +21,101 @@ app.get('*', (req, res) => {
 
 export default server;
 
+// it can be replaced DB
+const channels = {};
+const users = {};
+
 const io = require('socket.io')(server);
+if (REDIS_URL) {
+  io.adapter(redisAdapter(REDIS_URL));
+}
 io.on('connection', socket => {
   const id = socket.client.id;
 
-  socket.on('join channel', data => {
-    const { channel, username } = data;
-    socket.join(channel);
-    socket.broadcast.to(channel).emit('user joined channel', {
+  function use(route, callback) {
+    socket.on(route, (...args) => {
+      try {
+        callback(...args);
+      } catch (error) {
+        if (typeof(error) === 'string') {
+          socket.emit('error', {
+            type: route,
+            message: error,
+          });
+        } else {
+          console.log(error);
+        }
+      }
+    });
+  }
+
+  // authorize user
+  // @TODO validate token
+  use('authenticate user', ({ username }) => {
+    const user = users[id] = {
       id,
       username,
-    });
-    console.log(socket.rooms);
-  });
-
-  socket.on('change userinfo', data => {
-    const { channel, username } = data;
-    socket.broadcast.to(channel).emit('user changed info', {
-      id,
-      username,
+      channels: [],
+    };
+    console.log(user);
+    socket.emit('authorized', {
+      user,
     });
   });
 
-  socket.on('leave channel', data => {
-    const { channel } = data;
-    socket.broadcast.to(channel).emit('user left channel', {
-      id,
+  // join channel
+  use('join channel', ({ link }) => {
+    const user = users[id];
+    if (!user) throw 'you should be authorized';
+    if (!channels[link]) {
+      channels[link] = {
+        link,
+        allUsers: 0,
+      };
+    }
+    const channel = channels[link];
+    channel.allUsers++;
+    socket.join(link);
+    socket.broadcast.to(link).emit('user joined', {
+      channel,
+      user,
     });
-    socket.leave(channel);
+    socket.emit('channel connected', {
+      channel,
+    });
   });
 
-  socket.on('new message', data => {
-    const { channel, message } = data;
-    socket.broadcast.to(channel).emit('new message', {
-      id,
+  // leave channel
+  use('leave channel', ({ link }) => {
+    const user = users[id];
+    if (!user) throw 'you should be authorized';
+    const channel = channels[link];
+    if (!channel) throw 'the channel does not exist';
+    user.channels.splice(user.channels.indexOf(link), 1);
+    socket.emit('channel disconnected', { channel });
+    socket.broadcast.to(link).emit('user left', { channel, user });
+    socket.leave(link);
+    channel.allUsers -= 1;
+    if (!channel.allUsers) {
+      delete channels[link];
+    }
+  });
+
+  // send new message to users in the channel
+  use('new message', ({ link, content }) => {
+    const user = users[id];
+    if (!user) throw 'you should be authorized';
+    const channel = channels[link];
+    if (!channel) throw 'the channel does not exist';
+    if (user.channels.indexOf(link) === 0) throw 'you did not join the channel';
+    const message = {
+      author: id,
+      username: user.username,
+      content,
+    };
+    io.sockets.to(link).emit('new message', {
       message,
-    });
-  });
-
-  socket.on('start typing', data => {
-    const { channel } = data;
-    socket.broadcast.to(channel).emit('start typing', {
-      id,
-    });
-  });
-
-  socket.on('stop typing', data => {
-    const { channel } = data;
-    socket.broadcast.to(channel).emit('stop typing', {
-      id,
+      channel,
     });
   });
 });

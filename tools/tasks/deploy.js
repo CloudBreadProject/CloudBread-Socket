@@ -10,9 +10,9 @@ import build from './build';
 async function deploy() {
   // By default deploy to the staging deployment slot
   const remote = {
-    name: 'heroku',
-    url: `https://git.heroku.com/react-isomorphic.git`,
-    website: `https://react-isomorphic.herokuapp.com`,
+    name: 'azure',
+    url: `https://beingbook@hbh-cloudbread-socket.scm.azurewebsites.net:443/hbh-cloudbread-socket.git`,
+    website: `http://hbh-cloudbread-socket.azurewebsites.net`,
   };
 
   // Initialize a new Git repository inside the `/build` folder

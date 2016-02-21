@@ -3,15 +3,21 @@
 ## Installation
 
 * Node.js 4.x or 5.x
-* MongoDB Server (basically try to connect mongodb://localhost)
 
 ```sh
-git clone https://github.com/Beingbook/babel6-express.git
-cd babel6-express
+git clone https://github.com/CloudBreadProject/CloudBread-Socket.git
+cd CloudBread-Socket
 npm i # alias to install
 ```
 
 ## Usage
+
+### Configurations
+Every option below can be edited directly by modifying `src/config.js`
+
+#### Multiple Nodes
+To communicate between different nodes' user, you can use Redis server.
+You can integrate Redis easily through providing `REDIS_URL` environment variable.
 
 ### Custom Scripts
 

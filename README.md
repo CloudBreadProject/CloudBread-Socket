@@ -13,7 +13,7 @@ This project is designed for CloudBread mobile game & app server engine to imple
 
 ## See Documents
 * [Getting Started](./docs/get-started.md)
-* [API Route](./docs/route.md)
+* [API Reference](./docs/reference.md)
 
 ### Directory Map
 
@@ -28,12 +28,7 @@ Run `tree -L 2 -I 'node_modules|build|.git|.DS_Store' -A -a` then you will see b
 ├── README.md
 ├── package.json   # dependency list
 ├── src            # application source code
-│ ├── api          # api end point
 │ ├── assets       # static files
-│ ├── config       # configuration such as credentials
-│ ├── core         # configuration such as credentials
-│ ├── models       # mongoose models
-│ ├── public       # static files to serve through http or https
 │ ├── server.js    # server entry
 ├── tests          # unit tests
 └── tools          # build and deployment tools
