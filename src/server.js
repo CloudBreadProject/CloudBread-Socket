@@ -38,7 +38,7 @@ io.on('connection', socket => {
         callback(...args);
       } catch (error) {
         if (typeof(error) === 'string') {
-          socket.emit('error', {
+          socket.emit(`${route} error`, {
             type: route,
             message: error,
           });
