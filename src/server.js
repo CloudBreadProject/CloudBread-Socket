@@ -67,6 +67,7 @@ io.on('connection', socket => {
   use('join channel', ({ link }) => {
     const user = users[id];
     if (!user) throw 'you should be authorized';
+    if (user.channels.indexOf(link) !== -1) throw 'already connected';
     if (!channels[link]) {
       channels[link] = {
         link,
@@ -74,6 +75,7 @@ io.on('connection', socket => {
       };
     }
     const channel = channels[link];
+    user.channels.push(link);
     channel.allUsers++;
     socket.join(link);
     socket.broadcast.to(link).emit('user joined', {
@@ -89,6 +91,7 @@ io.on('connection', socket => {
   use('leave channel', ({ link }) => {
     const user = users[id];
     if (!user) throw 'you should be authorized';
+    if (user.channels.indexOf(link) === -1) throw 'not in connected';
     const channel = channels[link];
     if (!channel) throw 'the channel does not exist';
     user.channels.splice(user.channels.indexOf(link), 1);
@@ -116,6 +119,19 @@ io.on('connection', socket => {
     io.sockets.to(link).emit('new message', {
       message,
       channel,
+    });
+  });
+
+  // disconnected
+  socket.on('disconnect', () => {
+    const user = users[id];
+    user.channels.forEach(link => {
+      const channel = channels[link];
+      socket.broadcast.to(link).emit('user left', { channel, user });
+      channel.allUsers -= 1;
+      if (!channel.allUsers) {
+        delete channels[link];
+      }
     });
   });
 });
