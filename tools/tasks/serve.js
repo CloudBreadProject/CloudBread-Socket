@@ -36,6 +36,7 @@ function serve() {
         if (match) {
           return resolve();
         }
+        return false;
       }
       server.stderr.on('data', x => process.stderr.write(x));
       server.stdout.on('data', onStdOut);
