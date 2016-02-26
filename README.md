@@ -1,5 +1,9 @@
 # Babel6 Express Package
-![Dependency Badge](https://david-dm.org/Beingbook/babel6-api-server.svg)
+[![Build Status](https://travis-ci.org/Beingbook/babel6-api-server.svg?branch=master)](https://travis-ci.org/Beingbook/babel6-api-server)
+[![Dependency Badge](https://david-dm.org/Beingbook/babel6-api-server.svg?style=flat-square)](https://david-dm.org/Beingbook/babel6-api-server)
+[![devDependency Status](https://david-dm.org/Beingbook/babel6-api-server/dev-status.svg?style=flat-square)](https://david-dm.org/Beingbook/babel6-api-server#info=devDependencies)
+[![Code Climate](https://codeclimate.com/github/Beingbook/babel6-api-server/badges/gpa.svg)](https://codeclimate.com/github/Beingbook/babel6-api-server)
+[![Issue Count](https://codeclimate.com/github/Beingbook/babel6-api-server/badges/issue_count.svg)](https://codeclimate.com/github/Beingbook/babel6-api-server)
 
 Build api server with Babel!
 
