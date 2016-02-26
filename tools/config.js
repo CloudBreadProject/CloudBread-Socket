@@ -15,18 +15,8 @@ export const buildPath = `${ROOT}/build`;
 export const buildStaticPath = `${buildPath}/public`;
 export const srcPath = `${ROOT}/src`;
 export const modulePath = `${ROOT}/node_modules`;
-export const AUTOPREFIXER_BROWSERS = [
-  'Android 2.3',
-  'Android >= 4',
-  'Chrome >= 35',
-  'Firefox >= 31',
-  'Explorer >= 9',
-  'iOS >= 7',
-  'Opera >= 12',
-  'Safari >= 7.1',
-];
 const GLOBALS = {
-  'process.env.NODE_ENV': DEBUG ? `'development'` : `'production'`,
+  'process.env.NODE_ENV': DEBUG ? '\'development\'' : '\'production\'',
   __DEV__: DEBUG,
   __PORT__: DEV_PORT,
 };
@@ -118,7 +108,7 @@ export const webpackServer = merge({}, webpackCommon, {
   plugins: [
     ...webpackCommonPlugins,
     new webpack.BannerPlugin(
-      `require('source-map-support').install();`,
+      'require(\'source-map-support\').install();',
       { raw: true, entryOnly: false }
     ),
   ],

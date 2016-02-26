@@ -1,10 +1,9 @@
 # CloudBread-Socket
-
-[![Build Status](https://travis-ci.org/CloudBreadProject/CloudBread-Socket.svg?branch=master)](https://travis-ci.org/CloudBreadProject/CloudBread-Socket)
-[![bitHound Overall Score](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket/badges/score.svg)](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket)
-[![bitHound Dependencies](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket/badges/dependencies.svg)](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket/1.0.0-dev/dependencies/npm)
-[![bitHound Dev Dependencies](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket/badges/devDependencies.svg)](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket/1.0.0-dev/dependencies/npm)
-[![bitHound Code](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket/badges/code.svg)](https://www.bithound.io/github/CloudBreadProject/CloudBread-Socket)
+[![Build Status](https://travis-ci.org/Beingbook/babel6-api-server.svg?branch=master)](https://travis-ci.org/Beingbook/babel6-api-server)
+[![Dependency Status](https://david-dm.org/CloudBreadProject/CloudBread-Socket.svg?style=flat-square)](https://david-dm.org/CloudBreadProject/CloudBread-Socket)
+[![devDependency Status](https://david-dm.org/CloudBreadProject/CloudBread-Socket/dev-status.svg?style=flat-square)](https://david-dm.org/CloudBreadProject/CloudBread-Socket#info=devDependencies)
+[![Code Climate](https://codeclimate.com/github/CloudBreadProject/CloudBread-Socket/badges/gpa.svg)](https://codeclimate.com/github/CloudBreadProject/CloudBread-Socket)
+[![Issue Count](https://codeclimate.com/github/CloudBreadProject/CloudBread-Socket/badges/issue_count.svg)](https://codeclimate.com/github/CloudBreadProject/CloudBread-Socket)
 
 CloudBread game server real-time communication project
 
