@@ -12,7 +12,7 @@ for (const key in routes) {
 
 router.use((error, req, res, next) => { // eslint-disable-line no-unused-vars
   console.log(error); // eslint-disable-line no-console
-  let status;
+  let status = 400;
   switch (error.name) {
     case 'GrantError':
     case 'EntityError':

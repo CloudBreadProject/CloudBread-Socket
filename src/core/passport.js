@@ -81,7 +81,7 @@ export function localAuthenticate(req, res, next) {
       return next(new EntityError('User Not Found'));
     }
 
-    req.login(user, next);
+    return req.login(user, next);
   })(req, res, next);
 }
 
@@ -104,7 +104,7 @@ export function bearerAuthenticate(req, res, next) {
       return next(new EntityError());
     }
 
-    req.login(user, next);
+    return req.login(user, next);
   })(req, res, next);
 }
 
