@@ -2,7 +2,9 @@
 import express from 'express';
 import cors from 'cors';
 import redisAdapter from 'socket.io-redis';
-import { REDIS_URL } from 'config';
+import { REDIS_HOST, REDIS_AUTH_KEY, REDIS_PORT } from 'config';
+import { createClient as createRedisClient } from 'redis';
+import { decryptAES256 } from 'lib/crypt';
 
 const app = express();
 const server = require('http').Server(app); // eslint-disable-line
@@ -26,9 +28,21 @@ const channels = {};
 const users = {};
 
 const io = require('socket.io')(server);
-if (REDIS_URL) {
-  io.adapter(redisAdapter(REDIS_URL));
-}
+const pubClient = createRedisClient({
+  host: REDIS_HOST,
+  port: REDIS_PORT,
+  auth_pass: REDIS_AUTH_KEY,
+});
+const subClient = createRedisClient({
+  host: REDIS_HOST,
+  port: REDIS_PORT,
+  auth_pass: REDIS_AUTH_KEY,
+  return_buffers: true,
+});
+io.adapter(redisAdapter({
+  pubClient,
+  subClient,
+}));
 io.on('connection', socket => {
   const id = socket.client.id;
 
@@ -51,7 +65,7 @@ io.on('connection', socket => {
 
   // authorize user
   // @TODO validate token
-  use('authenticate user', ({ username }) => {
+  use('authenticate user', ({ token = 'Lwh92b01GfPaRng+vap/UwnykxRQAj7wrQBUcfpR9EpKiy5stJUv1xkDEITgXXmyofZ4PXQ5CmZOz/PsOhWS67DGC4JCAfQkMPZcwTHxWT7tQCkVhkKw53OCccVXXP7vKp6tWfeHvHgix2IwdG4elg==', sid, username }) => {
     const user = users[id] = {
       id,
       username,
