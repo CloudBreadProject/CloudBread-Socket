@@ -2,8 +2,12 @@
 import express from 'express';
 import cors from 'cors';
 import redisAdapter from 'socket.io-redis';
-import { REDIS_HOST, REDIS_AUTH_KEY, REDIS_PORT } from 'config';
-import { createClient as createRedisClient } from 'redis';
+import {
+  subClient,
+  pubClient,
+  getRedisItem,
+  canRedis,
+} from 'core/redisClient';
 
 const app = express();
 const server = require('http').Server(app); // eslint-disable-line
@@ -27,31 +31,12 @@ const channels = {};
 const users = {};
 
 const io = require('socket.io')(server);
-const pubClient = createRedisClient({
-  host: REDIS_HOST,
-  port: REDIS_PORT,
-  auth_pass: REDIS_AUTH_KEY,
-});
-const subClient = createRedisClient({
-  host: REDIS_HOST,
-  port: REDIS_PORT,
-  auth_pass: REDIS_AUTH_KEY,
-  return_buffers: true,
-});
-io.adapter(redisAdapter({
-  pubClient,
-  subClient,
-}));
-const redisClient = createRedisClient({
-  host: REDIS_HOST,
-  port: REDIS_PORT,
-  auth_pass: REDIS_AUTH_KEY,
-});
 
-function getRedisItem(id) {
-  return new Promise((resolve, reject) => {
-    redisClient.get(id, (error, res) => error ? reject(error) : resolve(res));
-  });
+if (canRedis) {
+  io.adapter(redisAdapter({
+    pubClient,
+    subClient,
+  }));
 }
 
 io.on('connection', socket => {
@@ -76,8 +61,10 @@ io.on('connection', socket => {
 
   // authorize user
   use('authenticate user', async ({ token, username }) => {
-    const userInfo = await getRedisItem(token);
-    if (!userInfo) throw 'Invalid token';
+    if (canRedis) {
+      const userInfo = await getRedisItem(token);
+      if (!userInfo) throw 'Invalid token';
+    }
     const user = users[id] = {
       id,
       username,
