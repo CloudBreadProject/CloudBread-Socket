@@ -4,7 +4,6 @@ import cors from 'cors';
 import redisAdapter from 'socket.io-redis';
 import { REDIS_HOST, REDIS_AUTH_KEY, REDIS_PORT } from 'config';
 import { createClient as createRedisClient } from 'redis';
-import { decryptAES256 } from 'lib/crypt';
 
 const app = express();
 const server = require('http').Server(app); // eslint-disable-line
@@ -43,6 +42,18 @@ io.adapter(redisAdapter({
   pubClient,
   subClient,
 }));
+const redisClient = createRedisClient({
+  host: REDIS_HOST,
+  port: REDIS_PORT,
+  auth_pass: REDIS_AUTH_KEY,
+});
+
+function getRedisItem(id) {
+  return new Promise((resolve, reject) => {
+    redisClient.get(id, (error, res) => error ? reject(error) : resolve(res));
+  });
+}
+
 io.on('connection', socket => {
   const id = socket.client.id;
 
@@ -64,14 +75,14 @@ io.on('connection', socket => {
   }
 
   // authorize user
-  // @TODO validate token
-  use('authenticate user', ({ token = 'Lwh92b01GfPaRng+vap/UwnykxRQAj7wrQBUcfpR9EpKiy5stJUv1xkDEITgXXmyofZ4PXQ5CmZOz/PsOhWS67DGC4JCAfQkMPZcwTHxWT7tQCkVhkKw53OCccVXXP7vKp6tWfeHvHgix2IwdG4elg==', sid, username }) => {
+  use('authenticate user', async ({ token, username }) => {
+    const userInfo = await getRedisItem(token);
+    if (!userInfo) throw 'Invalid token';
     const user = users[id] = {
       id,
       username,
       channels: [],
     };
-    console.log(user);
     socket.emit('authorized', {
       user,
     });
@@ -139,6 +150,9 @@ io.on('connection', socket => {
   // disconnected
   socket.on('disconnect', () => {
     const user = users[id];
+    if (!user) {
+      return;
+    }
     user.channels.forEach(link => {
       const channel = channels[link];
       socket.broadcast.to(link).emit('user left', { channel, user });

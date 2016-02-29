@@ -13,11 +13,9 @@ npm i # alias to install
 ## Usage
 
 ### Configurations
-Every option below can be edited directly by modifying `src/config.js`
-
-#### Multiple Nodes
-To communicate between different nodes' user, you can use Redis server.
-You can integrate Redis easily through providing `REDIS_URL` environment variable.
+You should configure Redis options to authenticate users and connect multiple nodes.
+You can edit `src/config.js` file or provide environment variables to integrate Redis.
+`REDIS_HOST`, `REDIS_PORT` and `REDIS_AUTH_KEY` are required to create redis client.
 
 ### Custom Scripts
 
