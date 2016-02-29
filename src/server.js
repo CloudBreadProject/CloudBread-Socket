@@ -2,7 +2,12 @@
 import express from 'express';
 import cors from 'cors';
 import redisAdapter from 'socket.io-redis';
-import { REDIS_URL } from 'config';
+import {
+  subClient,
+  pubClient,
+  getRedisItem,
+  canRedis,
+} from 'core/redisClient';
 
 const app = express();
 const server = require('http').Server(app); // eslint-disable-line
@@ -26,9 +31,14 @@ const channels = {};
 const users = {};
 
 const io = require('socket.io')(server);
-if (REDIS_URL) {
-  io.adapter(redisAdapter(REDIS_URL));
+
+if (canRedis) {
+  io.adapter(redisAdapter({
+    pubClient,
+    subClient,
+  }));
 }
+
 io.on('connection', socket => {
   const id = socket.client.id;
 
@@ -50,14 +60,16 @@ io.on('connection', socket => {
   }
 
   // authorize user
-  // @TODO validate token
-  use('authenticate user', ({ username }) => {
+  use('authenticate user', async ({ token, username }) => {
+    if (canRedis) {
+      const userInfo = await getRedisItem(token);
+      if (!userInfo) throw 'Invalid token';
+    }
     const user = users[id] = {
       id,
       username,
       channels: [],
     };
-    console.log(user);
     socket.emit('authorized', {
       user,
     });
@@ -125,6 +137,9 @@ io.on('connection', socket => {
   // disconnected
   socket.on('disconnect', () => {
     const user = users[id];
+    if (!user) {
+      return;
+    }
     user.channels.forEach(link => {
       const channel = channels[link];
       socket.broadcast.to(link).emit('user left', { channel, user });

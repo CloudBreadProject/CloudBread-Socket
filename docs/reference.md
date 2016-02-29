@@ -19,6 +19,7 @@ users should be authorized to chat
 // try to authenticate user
 socket.emit('authenticate user', {
   username: 'username',
+  token: 'token',
 });
 
 // succeed to authorize user
