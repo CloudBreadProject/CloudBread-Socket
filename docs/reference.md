@@ -4,7 +4,7 @@
 when troubles come, you can handle it like this
 
 ```js
-socket.on('error', ({
+socket.on(`${API_NAME} error`, ({
   type,    // error constant such as `authenticate user`, `join channel`, etc...
   message, // error message
 }) => {
