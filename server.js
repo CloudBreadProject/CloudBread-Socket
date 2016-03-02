@@ -302,7 +302,7 @@ module.exports =
      if (!user) throw 'you should be authorized';
      var channel = channels[link];
      if (!channel) throw 'the channel does not exist';
-     if (user.channels.indexOf(link) === 0) throw 'you did not join the channel';
+     if (user.channels.indexOf(link) === -1) throw 'you did not join the channel';
      var message = {
        author: id,
        username: user.username,
