@@ -1,5 +1,5 @@
 import request from 'supertest';
-import server from 'server.js';
+import server from 'server';
 
 describe('Server', () => {
   it('is a object', () => {
