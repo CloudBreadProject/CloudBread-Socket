@@ -46,8 +46,8 @@ module.exports =
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
- __webpack_require__(3);
- module.exports = __webpack_require__(2);
+ __webpack_require__(4);
+ module.exports = __webpack_require__(3);
 
 
 /***/ },
@@ -59,7 +59,13 @@ module.exports =
  Object.defineProperty(exports, "__esModule", {
    value: true
  });
- var REDIS_URL = exports.REDIS_URL = process.env.REDIS_URL;
+ var _process$env = process.env;
+ var REDIS_HOST = _process$env.REDIS_HOST;
+ var REDIS_PORT = _process$env.REDIS_PORT;
+ var REDIS_AUTH_KEY = _process$env.REDIS_AUTH_KEY;
+ exports.REDIS_HOST = REDIS_HOST;
+ exports.REDIS_PORT = REDIS_PORT;
+ exports.REDIS_AUTH_KEY = REDIS_AUTH_KEY;
 
 /***/ },
 /* 2 */
@@ -70,28 +76,73 @@ module.exports =
  Object.defineProperty(exports, "__esModule", {
    value: true
  });
- 
- var _express = __webpack_require__(5);
- 
- var _express2 = _interopRequireDefault(_express);
- 
- var _cors = __webpack_require__(4);
- 
- var _cors2 = _interopRequireDefault(_cors);
- 
- var _socket = __webpack_require__(8);
- 
- var _socket2 = _interopRequireDefault(_socket);
+ exports.subClient = exports.pubClient = exports.canRedis = undefined;
+ exports.getRedisItem = getRedisItem;
  
  var _config = __webpack_require__(1);
  
+ var _redis = __webpack_require__(8);
+ 
+ var canRedis = exports.canRedis = _config.REDIS_HOST;
+ 
+ var pubClient = exports.pubClient = canRedis ? (0, _redis.createClient)({
+   host: _config.REDIS_HOST,
+   port: _config.REDIS_PORT,
+   auth_pass: _config.REDIS_AUTH_KEY
+ }) : null;
+ 
+ var subClient = exports.subClient = canRedis ? (0, _redis.createClient)({
+   host: _config.REDIS_HOST,
+   port: _config.REDIS_PORT,
+   auth_pass: _config.REDIS_AUTH_KEY,
+   return_buffers: true
+ }) : null;
+ 
+ var redisClient = canRedis ? (0, _redis.createClient)({
+   host: _config.REDIS_HOST,
+   port: _config.REDIS_PORT,
+   auth_pass: _config.REDIS_AUTH_KEY
+ }) : null;
+ 
+ function getRedisItem(id) {
+   return new Promise(function (resolve, reject) {
+     redisClient.get(id, function (error, res) {
+       return error ? reject(error) : resolve(res);
+     });
+   });
+ }
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+ 'use strict';
+ 
+ Object.defineProperty(exports, "__esModule", {
+   value: true
+ });
+ 
+ var _express = __webpack_require__(6);
+ 
+ var _express2 = _interopRequireDefault(_express);
+ 
+ var _cors = __webpack_require__(5);
+ 
+ var _cors2 = _interopRequireDefault(_cors);
+ 
+ var _socket = __webpack_require__(10);
+ 
+ var _socket2 = _interopRequireDefault(_socket);
+ 
+ var _redisClient = __webpack_require__(2);
+ 
  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
  
- /* eslint no-console: 0, no-throw-literal: 0 */
+ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; } /* eslint no-console: 0, no-throw-literal: 0 */
  
  
  var app = (0, _express2.default)();
- var server = __webpack_require__(6).Server(app); // eslint-disable-line
+ var server = __webpack_require__(7).Server(app); // eslint-disable-line
  server.listen(process.env.PORT || (8222), function () {
    var _server$address = server.address();
  
@@ -115,10 +166,15 @@ module.exports =
  var channels = {};
  var users = {};
  
- var io = __webpack_require__(7)(server);
- if (_config.REDIS_URL) {
-   io.adapter((0, _socket2.default)(_config.REDIS_URL));
+ var io = __webpack_require__(9)(server);
+ 
+ if (_redisClient.canRedis) {
+   io.adapter((0, _socket2.default)({
+     pubClient: _redisClient.pubClient,
+     subClient: _redisClient.subClient
+   }));
  }
+ 
  io.on('connection', function (socket) {
    var id = socket.client.id;
  
@@ -128,7 +184,7 @@ module.exports =
          callback.apply(undefined, arguments);
        } catch (error) {
          if (typeof error === 'string') {
-           socket.emit('error', {
+           socket.emit(route + ' error', {
              type: route,
              message: error
            });
@@ -140,20 +196,57 @@ module.exports =
    }
  
    // authorize user
-   // @TODO validate token
-   use('authenticate user', function (_ref) {
-     var username = _ref.username;
+   use('authenticate user', function () {
+     var ref = _asyncToGenerator(regeneratorRuntime.mark(function _callee(_ref) {
+       var token = _ref.token;
+       var username = _ref.username;
+       var userInfo, user;
+       return regeneratorRuntime.wrap(function _callee$(_context) {
+         while (1) {
+           switch (_context.prev = _context.next) {
+             case 0:
+               if (!_redisClient.canRedis) {
+                 _context.next = 6;
+                 break;
+               }
  
-     var user = users[id] = {
-       id: id,
-       username: username,
-       channels: []
+               _context.next = 3;
+               return (0, _redisClient.getRedisItem)(token);
+ 
+             case 3:
+               userInfo = _context.sent;
+ 
+               if (userInfo) {
+                 _context.next = 6;
+                 break;
+               }
+ 
+               throw 'Invalid token';
+ 
+             case 6:
+               user = users[id] = {
+                 id: id,
+                 username: username,
+                 channels: []
+               };
+ 
+               socket.emit('authorized', {
+                 user: user
+               });
+ 
+             case 8:
+             case 'end':
+               return _context.stop();
+           }
+         }
+       }, _callee, undefined);
+     })),
+         _this = undefined;
+ 
+     return function (_x) {
+       return ref.apply(_this, arguments);
      };
-     console.log(user);
-     socket.emit('authorized', {
-       user: user
-     });
-   });
+   }());
  
    // join channel
    use('join channel', function (_ref2) {
@@ -161,6 +254,7 @@ module.exports =
  
      var user = users[id];
      if (!user) throw 'you should be authorized';
+     if (user.channels.indexOf(link) !== -1) throw 'already connected';
      if (!channels[link]) {
        channels[link] = {
          link: link,
@@ -168,6 +262,7 @@ module.exports =
        };
      }
      var channel = channels[link];
+     user.channels.push(link);
      channel.allUsers++;
      socket.join(link);
      socket.broadcast.to(link).emit('user joined', {
@@ -185,6 +280,7 @@ module.exports =
  
      var user = users[id];
      if (!user) throw 'you should be authorized';
+     if (user.channels.indexOf(link) === -1) throw 'not in connected';
      var channel = channels[link];
      if (!channel) throw 'the channel does not exist';
      user.channels.splice(user.channels.indexOf(link), 1);
@@ -217,40 +313,62 @@ module.exports =
        channel: channel
      });
    });
+ 
+   // disconnected
+   socket.on('disconnect', function () {
+     var user = users[id];
+     if (!user) {
+       return;
+     }
+     user.channels.forEach(function (link) {
+       var channel = channels[link];
+       socket.broadcast.to(link).emit('user left', { channel: channel, user: user });
+       channel.allUsers -= 1;
+       if (!channel.allUsers) {
+         delete channels[link];
+       }
+     });
+   });
  });
-
-/***/ },
-/* 3 */
-/***/ function(module, exports) {
-
- module.exports = require("babel-polyfill");
 
 /***/ },
 /* 4 */
 /***/ function(module, exports) {
 
- module.exports = require("cors");
+ module.exports = require("babel-polyfill");
 
 /***/ },
 /* 5 */
 /***/ function(module, exports) {
 
- module.exports = require("express");
+ module.exports = require("cors");
 
 /***/ },
 /* 6 */
 /***/ function(module, exports) {
 
- module.exports = require("http");
+ module.exports = require("express");
 
 /***/ },
 /* 7 */
 /***/ function(module, exports) {
 
- module.exports = require("socket.io");
+ module.exports = require("http");
 
 /***/ },
 /* 8 */
+/***/ function(module, exports) {
+
+ module.exports = require("redis");
+
+/***/ },
+/* 9 */
+/***/ function(module, exports) {
+
+ module.exports = require("socket.io");
+
+/***/ },
+/* 10 */
 /***/ function(module, exports) {
 
  module.exports = require("socket.io-redis");
