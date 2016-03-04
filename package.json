@@ -1,12 +1,12 @@
 {
   "private": true,
   "scripts": {
-    "test": "env NODE_PATH=$NODE_PATH:$PWD/src mocha tests/* --require babel-core/register --require babel-polyfill --require ./tests/helper --recursive",
+    "test": "mocha tests/* --require babel-core/register --require babel-polyfill --require ./tests/helper --recursive",
     "start": "node server.js",
     "build": "npm run test && $(npm bin)/babel-node tools/run build -- --release",
-    "lint": "$(npm bin)/eslint . --ext .js,.jsx",
-    "clean": "$(npm bin)/babel-node tools/run clean",
-    "deploy": "npm run lint && npm run test && $(npm bin)/babel-node tools/run deploy -- --release"
+    "lint": "eslint . --ext .js,.jsx",
+    "clean": "babel-node tools/run clean",
+    "deploy": "npm run lint && npm run test && babel-node tools/run deploy -- --release"
   },
   "babel": {
     "presets": [
@@ -31,6 +31,7 @@
     "source-map-support": "^0.4.0"
   },
   "devDependencies": {
+    "app-module-path": "^1.0.5",
     "babel-cli": "^6.5.1",
     "babel-eslint": "^5.0.0",
     "babel-loader": "^6.2.4",
